@@ -31,36 +31,41 @@ router.get('/', async (req, res, next) => {
           }
         }
       });
-      // .populate(
-      //   {path: 'children'}.populate({path: 'children'})
-      // )
 
       console.log('user: ', user);
 
       let pointsCalc = (children, divisor) => {
         //[{}]
+
+        if (children === undefined) {
+          return 0;
+        }
+
+        let points = 0;
         if (!divisor) {
           var divisor = 1;
           console.log('divisor set!');
+          points += children.length;
+        } else {
+          points += children.length / divisor;
         }
 
-        let points = 1;
-        if (children.children) {
+        children.forEach(child => {
+          console.log('\x1b[33m', 'child: ' + child);
           //if
-          return (points += pointsCalc(children.children, divisor + 1));
-        }
-        return points;
+          points += pointsCalc(child.children, divisor * 2);
+        });
+
+        console.log('user.children: ' + user.children);
+        let count = pointsCalc(user.children); //[{}]
+
+        res.render('home', {
+          user: req.user,
+          children: user.children, //needs to be a nested object
+          link: `/ponvert/${req.user._id}`,
+          points: count
+        });
       };
-
-      console.log('user.children: ' + user.children);
-      let count = pointsCalc(user.children); //[{}]
-
-      res.render('home', {
-        user: req.user,
-        children: user.children, //needs to be a nested object
-        link: `/ponvert/${req.user._id}`,
-        points: count
-      });
     } else {
       res.redirect('/login');
     }
