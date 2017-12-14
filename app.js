@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 
-
 // ----------------------------------------
 // App Variables
 // ----------------------------------------
@@ -83,17 +82,11 @@ app.use(morganToolkit());
 const { User } = require('./models');
 const mongoose = require('mongoose');
 
-console.log('mongoose stuff intialized')
-
 app.use((req, res, next) => {
-  console.log('use for mongoose callback')
   if (mongoose.connection.readyState) {
-    console.log('if (mongoose.connection.readyState)')
     next();
   } else {
-    console.log('else (mongoose.connection.readyState)')
     require('./mongo')().then(() => next());
-    console.log('else (mongoose.connection.readyState)')
   }
 });
 
@@ -103,7 +96,6 @@ app.use((req, res, next) => {
 const passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
-console.log('passport stuff initialize')
 
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -114,13 +106,14 @@ passport.use(
       if (!user || !user.validPassword(password)) {
         return done(null, false, { message: 'Invalid email/password' });
       }
+      console.log(user);
       return done(null, user);
     });
   })
 );
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {

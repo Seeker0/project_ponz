@@ -16,63 +16,57 @@ router.get('/', async (req, res, next) => {
   console.log(1);
   try {
     if (req.user) {
-      const user = await User.findById(req.user._id)
-        .populate({
-          path : 'children',
-          populate : {
-            path : 'children',
-            populate : {
-              path : 'children',
-              populate : {
-                path : 'children',
-                populate : {
-                  path : 'children'
-                }}}}})
-        // .populate(
-        //   {path: 'children'}.populate({path: 'children'})
-        // )
+      const user = await User.findById(req.user._id).populate({
+        path: 'children',
+        populate: {
+          path: 'children',
+          populate: {
+            path: 'children',
+            populate: {
+              path: 'children',
+              populate: {
+                path: 'children'
+              }
+            }
+          }
+        }
+      });
+      // .populate(
+      //   {path: 'children'}.populate({path: 'children'})
+      // )
 
-      console.log('user: ', user)
+      console.log('user: ', user);
 
-      let pointsCalc = (children, divisor) => { //[{}]
-        if(!divisor){
-          var divisor = 1
+      let pointsCalc = (children, divisor) => {
+        //[{}]
+        if (!divisor) {
+          var divisor = 1;
           console.log('divisor set!');
         }
 
-        let points = 0;
-        if(divisor !== 1){
-          points += children.length / (2 * divisor)
-        } else {
-          console.log('points declared!')
-          points += 1
+        let points = 1;
+        if (children.children) {
+          //if
+          return (points += pointsCalc(children.children, divisor + 1));
         }
+        return points;
+      };
 
-        if(children.children){ //if
-          points += pointsCalc(children.children, divisor + 1)
-        }
-
-        return points
-      }
-
-      console.log('user.children: ' + user.children)
-      let count = pointsCalc(user.children)//[{}]
+      console.log('user.children: ' + user.children);
+      let count = pointsCalc(user.children); //[{}]
 
       res.render('home', {
         user: req.user,
         children: user.children, //needs to be a nested object
         link: `/ponvert/${req.user._id}`,
         points: count
-      })
-    }
-    else {
+      });
+    } else {
       res.redirect('/login');
     }
-  }
-
-  catch (err) {
+  } catch (err) {
     console.log(err);
-    next(err)
+    next(err);
   }
 });
 
