@@ -31,7 +31,12 @@
 
       {{!-- Links --}}
       <ul class="nav navbar-nav navbar-right">
-        <li><a>Emails ->>> </a></li>
+        <li>{{#if user._id}}
+              <a href='/logout'>Logout</a>
+            {{else}}
+              <a href='/login'>Login</a>
+            {{/if}}
+        </li>
       </ul>
 
     </div><!-- /.navbar-collapse -->

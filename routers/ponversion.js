@@ -11,22 +11,23 @@ const { User } = require('./../models');
 const passport = require('passport');
 
 // 2
-router.get('/register', (req, res) => {
-  res.render('ponvert-register');
+router.get('/register', async (req, res) => {
+  let parent = await User.findById(req.session.parentId);
+  res.render('ponvert-register', { parent });
 });
 
 // 3
 
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const parentId = req.session.parentId;
+    const { email, password, parentId, parentDepth } = req.body;
 
     //create a new user from referral link
     let user = new User({
       email: email,
       password: password,
-      parent: parentId
+      parent: parentId,
+      depth: Number(parentDepth) + 1
     });
     user = await user.save();
 
@@ -36,6 +37,8 @@ router.post('/register', async (req, res, next) => {
     //add the new user as the parent's child
     parent.children.push(user._id);
     await parent.save();
+
+    await user.setPoints();
 
     //login the new user
     req.login(user, function(err) {
@@ -51,11 +54,6 @@ router.post('/register', async (req, res, next) => {
 
 // 1
 router.get('/:id', (req, res) => {
-  // if (req.user) {
-  //   res.render('home', {
-  //     user: req.user
-  //   });
-  // } else {
   req.session.parentId = req.params.id;
   res.redirect('/ponvert/register');
   // }

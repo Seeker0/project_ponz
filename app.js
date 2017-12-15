@@ -106,7 +106,6 @@ passport.use(
       if (!user || !user.validPassword(password)) {
         return done(null, false, { message: 'Invalid email/password' });
       }
-      console.log(user);
       return done(null, user);
     });
   })
@@ -118,18 +117,36 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
-    done(err, user);
+    if (!user) {
+      return done(null, false, { message: 'User not found' });
+    }
+    let newUser = {
+      _id: user._id,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      depth: user.depth
+    };
+    done(err, newUser);
   });
 });
 
 // ----------------------------------------
 // Routes
 // ----------------------------------------
-const home = require('./routers/home');
-app.use('/', home);
-
 const ponversion = require('./routers/ponversion');
 app.use('/ponvert', ponversion);
+
+const login = require('./routers/login');
+app.use('/login', login);
+
+const logout = require('./routers/logout');
+app.use('/logout', logout);
+
+const register = require('./routers/register');
+app.use('/register', register);
+
+const home = require('./routers/home');
+app.use('/', home);
 
 // ----------------------------------------
 // Template Engine

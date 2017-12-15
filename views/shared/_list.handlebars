@@ -1,9 +1,9 @@
 {{#each children as |child|}} {{! Each item is an "li" }}
 <li>
-    {{child.email}}
+    {{child.email}}<p> <i>ponverted on {{child.createdAt}}</i></p>
     {{#if child.children.length}} {{! Within the context of the current item }}
     <ul>
-    {{> shared/_list}} {{! Recursively render the partial }}
+    {{> shared/_list children=child.children }} {{! Recursively render the partial }}
     </ul>
     {{/if}}
 </li>

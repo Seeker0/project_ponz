@@ -7,6 +7,8 @@
   <div class="form-group">
     <label for="password">Password</label>
     <input name="password" type="password" class="form-control" id="password">
+    <input type='hidden' name='parentId' value='{{parent._id}}'>
+    <input type='hidden' name='parentDepth' value='{{parent.depth}}'>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>

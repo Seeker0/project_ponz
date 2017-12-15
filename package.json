@@ -1,13 +1,16 @@
 {
   "name": "project_ponz",
   "version": "1.0.0",
-  "description": "Building Ponz.io, with its endearingly upside-down-triangle-shaped business model.",
+  "description":
+    "Building Ponz.io, with its endearingly upside-down-triangle-shaped business model.",
   "main": "app.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node seeds",
+    "seeds": "node seeds"
   },
   "repository": {
     "type": "git",
@@ -35,6 +38,7 @@
     "method-override": "^2.3.10",
     "mongoose": "^4.13.7",
     "mongoose-unique-validator": "^1.0.6",
+    "mongooseeder": "^2.0.6",
     "morgan": "^1.9.0",
     "morgan-toolkit": "^1.0.2",
     "passport": "^0.4.0",
